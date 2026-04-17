@@ -1,26 +1,7 @@
 // ===============================================================
 // Assumed Data Model
 // ===============================================================
-//
-// Collection: products
-// Fields: name, description, category, images (array), price, stock, stockStatus, averageRating, reviewCount, createdAt
-//
-// Collection: reviews
-// Fields: productId, customerName, rating, text, status (pending/approved), createdAt
-//
-// Collection: orders
-// Fields: customerName, phone, email, items (array), status, createdAt
-//
-// Collection: chatSessions
-// Fields: customerName, lastMessage, unreadCountAdmin, unreadCountCustomer, updatedAt
-//
-// Collection: messages
-// Fields: sessionId, sender, text, createdAt
-//
-// Collection: settings
-// Fields: whatsappNumber, storeName
-//
-// ===============================================================
+// (Data model same as before but adding new fields: isTrending, isRecommended, colors)
 
 rules_version = '2';
 
@@ -31,45 +12,43 @@ service cloud.firestore {
       return request.auth != null;
     }
     
-    // In this app, only the admin has full access. 
-    // The admin is uniquely identified by authentication since they are the only registered user.
     function isAdmin() {
-       return isAuthenticated(); // Simplified rule: any authenticated user is admin for this specific app
+       return isAuthenticated() && request.auth.token.email == 'admin@propaint.local';
     }
     
     // Products
     match /products/{productId} {
-      allow read: if true; // Publicly readable
+      allow read: if true;
       allow write: if isAdmin();
     }
     
     // Reviews
     match /reviews/{reviewId} {
       allow read: if resource.data.status == 'approved' || isAdmin();
-      allow create: if true; // Anyone can post a review (should ideally have rate limiting, but for demo it's fine)
+      allow create: if true;
       allow update, delete: if isAdmin();
     }
     
     // Orders
     match /orders/{orderId} {
       allow read: if isAdmin();
-      allow create: if true; // Anyone can submit an order request
+      allow create: if true;
       allow update, delete: if isAdmin();
     }
     
     // Chat Sessions
     match /chatSessions/{sessionId} {
-      allow read, write: if true; // In a real app we'd scope this by a customer session ID, allowing true for MVP
+      allow read, write: if true; 
     }
     
     // Messages
     match /messages/{messageId} {
-      allow read, write: if true; // Same as chatSessions
+      allow read, write: if true;
     }
     
     // Settings
     match /settings/{settingId} {
-      allow read: if true; // Public settings like whatsapp number
+      allow read: if true;
       allow write: if isAdmin();
     }
   }

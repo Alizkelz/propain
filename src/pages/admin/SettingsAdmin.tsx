@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
@@ -19,7 +19,7 @@ export default function SettingsAdmin() {
     fetchSettings();
   }, []);
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -35,38 +35,40 @@ export default function SettingsAdmin() {
 
   return (
     <div className="max-w-2xl">
-      <h2 className="text-2xl font-bold text-gray-900 mb-8">Store Settings</h2>
+      <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-8 font-serif">Store Settings</h2>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+      <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 border border-slate-100 dark:border-slate-700 p-8">
         <form onSubmit={handleSave} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Store Name</label>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Store Name</label>
             <input 
               type="text" 
               value={formData.storeName}
               onChange={e => setFormData({...formData, storeName: e.target.value})}
-              className="w-full px-4 py-3 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none dark:text-white transition" 
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
-            <p className="text-xs text-gray-500 mb-2">Include country code without + or 00 (e.g. 1234567890)</p>
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 mt-4 flex items-baseline">
+                WhatsApp Number
+                <span className="text-xs font-medium text-slate-500 ml-2 font-mono">(Country code required, no +)</span>
+            </label>
             <input 
               type="text" 
               value={formData.whatsappNumber}
               onChange={e => setFormData({...formData, whatsappNumber: e.target.value})}
-              className="w-full px-4 py-3 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" 
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none dark:text-white transition font-mono" 
               placeholder="1234567890"
             />
           </div>
 
-          <div className="pt-6 border-t border-gray-100">
+          <div className="pt-8 border-t border-slate-200 dark:border-slate-700 mt-8">
             <button 
               type="submit" 
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-lg transition disabled:opacity-50"
+              className="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-8 py-4 rounded-xl transition disabled:opacity-50 shadow-lg shadow-amber-500/20 active:scale-95 flex items-center justify-center"
             >
-              {loading ? 'Saving...' : 'Save Settings'}
+              {loading ? 'Saving Changes...' : 'Save Settings'}
             </button>
           </div>
         </form>
