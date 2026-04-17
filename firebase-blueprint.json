@@ -1,0 +1,116 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A paint product",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "images": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "price": { "type": "number" },
+        "stock": { "type": "number" },
+        "stockStatus": { "type": "string" },
+        "averageRating": { "type": "number", "default": 0 },
+        "reviewCount": { "type": "number", "default": 0 },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["name", "description", "category", "price", "stock", "createdAt"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Customer review for a product",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "rating": { "type": "number" },
+        "text": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["productId", "customerName", "rating", "text", "status", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Order or quote request from a customer",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "items": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "status": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["customerName", "phone", "items", "status", "createdAt"]
+    },
+    "ChatSession": {
+      "title": "ChatSession",
+      "description": "A chat session with a customer",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "lastMessage": { "type": "string" },
+        "unreadCountAdmin": { "type": "number" },
+        "unreadCountCustomer": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["customerName", "updatedAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A single chat message",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "sender": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["sessionId", "sender", "text", "createdAt"]
+    },
+    "Settings": {
+       "title": "Settings",
+       "description": "Global store settings",
+       "type": "object",
+       "properties": {
+         "whatsappNumber": { "type": "string" },
+         "storeName": { "type": "string" }
+       }
+    }
+  },
+  "firestore": {
+    "products": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Paint products catalogue."
+    },
+    "reviews": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Customer reviews."
+    },
+    "orders": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Customer quote requests and orders."
+    },
+    "chatSessions": {
+      "schema": { "$ref": "#/entities/ChatSession" },
+      "description": "Live chat sessions."
+    },
+    "messages": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Live chat messages."
+    },
+    "settings": {
+       "schema": { "$ref": "#/entities/Settings" },
+       "description": "Global configurations."
+    }
+  }
+}
