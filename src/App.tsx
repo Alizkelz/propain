@@ -34,8 +34,7 @@ export default function App() {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
-      // In this system, any logged in user is admin
-      setIsAdmin(!!user);
+      setIsAdmin(user?.email === 'owner@propaint.local');
       setIsAdminReady(true);
     });
     return unsub;

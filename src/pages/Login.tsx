@@ -4,7 +4,7 @@ import { auth } from '../firebase';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { PaintBucket, Lock, ArrowRight } from 'lucide-react';
 
-const ADMIN_EMAIL = 'admin@propaint.local';
+const ADMIN_EMAIL = 'owner@propaint.local';
 
 export default function Login() {
   const [passcode, setPasscode] = useState('');
@@ -26,14 +26,22 @@ export default function Login() {
       await signInWithEmailAndPassword(auth, ADMIN_EMAIL, passcode);
       navigate('/admin');
     } catch (err: any) {
+      if (err.code === 'auth/operation-not-allowed') {
+         setLoading(false);
+         setError('Action Required: You must manually enable "Email/Password" in your Firebase Project Console under Authentication > Sign-in method.');
+         return;
+      }
       // If sign in fails, it might be the first time. Try creating the account.
       try {
         await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, passcode);
         navigate('/admin');
       } catch (createErr: any) {
-        // If creation fails (e.g. email already exists), it means the password was wrong
         console.error(createErr);
-        setError('Invalid access code.');
+        if (createErr.code === 'auth/operation-not-allowed') {
+          setError('Email/Password authentication is not enabled in your Firebase Console. You MUST manually enable it inside Firebase > Authentication > Sign-in method before you can log in.');
+        } else {
+          setError('Invalid access code or account creation failed.');
+        }
       }
     } finally {
       setLoading(false);
